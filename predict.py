@@ -1,3 +1,7 @@
 class Predict:
     def __init__(self):
-        pass
+        self.class_label = None
+
+
+    def predict(self, item):
+        return self.class_label

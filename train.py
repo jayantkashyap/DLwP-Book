@@ -1,3 +1,6 @@
 class Train:
     def __init__(self):
-        pass
+        self.model = None
+
+    def train(self, X_train, y_train):
+        return self.model
