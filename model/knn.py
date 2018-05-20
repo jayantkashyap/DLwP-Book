@@ -28,8 +28,25 @@ class NearestNeighbor:
 
         for i in tqdm(range(num_test)):
             distances = np.sum(np.abs(self._Xtr - x_test[i,:]), axis=1)
-            min_idx = np.argmin(distances)
-            y_pred[i] = self._ytr[min_idx]
+
+            if self._k == 1:
+                min_idx = np.argmin(distances)
+                y_pred[i] = self._ytr[min_idx]
+
+            else:
+                min_idxs = np.argsort(distances)[:self._k]
+
+                votes = {}
+                for label in self._ytr[min_idxs]:
+                    votes[label] = votes.get(label, 0) + 1
+
+                max_votes = 0
+                # max_votes_class = None
+                for _class, _votes in votes.items():
+                    if _votes > max_votes:
+                        max_votes = _votes
+                        y_pred[i] = _class
+                # y_pred[i] = max_votes_class
 
         return y_pred
 
@@ -38,13 +55,15 @@ if __name__ == '__main__':
 
     print('[INFO] Load Dataset')
     data_files = list(list_files(PATH))
-    data, labels = dataset_loader(data_files, preprocessing=(32, 32))
+    data, labels = dataset_loader(data_files, preprocessing=(32, 32), verbose=500)
 
     data = data.reshape(data.shape[0], 3072)
 
-    train_X, test_X, train_y, test_y = train_test_split(data, labels, test_size=0.2, random_state=101)
+    train_X, test_X, train_y, test_y = train_test_split(data, labels, test_size=0.33, random_state=42)
 
-    model = NearestNeighbor()
+    print('[INFO]: Features Matrix: {:.1f}MB'.format(float(data.nbytes / 1024 * 1000.0)))
+
+    model = NearestNeighbor(5)
     model.train(train_X, train_y)
 
     print(classification_report(test_y, model.predict(test_X)))
