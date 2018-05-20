@@ -1,5 +1,6 @@
 import cv2
 
+
 class Preprocessing:
     def __init__(self, height, width, interpolation=cv2.INTER_AREA):
         self._height = height

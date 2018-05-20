@@ -27,7 +27,7 @@ class NearestNeighbor:
         print("[INFO] Prediction...")
 
         for i in tqdm(range(num_test)):
-            distances = np.sum(np.abs(self._Xtr - x_test[i,:]), axis=1)
+            distances = np.sum(np.abs(self._Xtr - x_test[i, :]), axis=1)
 
             if self._k == 1:
                 min_idx = np.argmin(distances)
@@ -67,4 +67,3 @@ if __name__ == '__main__':
     model.train(train_X, train_y)
 
     print(classification_report(test_y, model.predict(test_X)))
-
